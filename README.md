@@ -53,6 +53,24 @@ allows for a field key to have dots in it, ie:
 applications."service.myhost.com".module=myservice
 ```
 
+### routes
+
+Because Nginx routes are a list of k-v pairs, some of which may act as
+predicates, the order in which routes are declared are preserved.  Currently,
+only URI matches are supported (```match_uri```) and the default route, which
+should always be declared last.
+
+In general, doing route assignments via '=' will produce unpredictable (read: wrong)
+results.
+
+### applications
+
+Applications were pretty much beaten to death (above) and in the example (below).
+
+### listeners
+
+Keep it simple, and we'll all get along just fine.  See the syntax in the example below.
+
 ### Examples
 ```
 # Put before overrides;
@@ -95,3 +113,9 @@ applications.dummy_app.processes.max = 1
 applications.search.module=error_search
 applications.error_admin.callable=app
 ```
+
+## Who
+
+Requests for small feature enhancements are welcome, requests for large feature enhancements should come in the form of a pull request with a working implementation.  Heh Heh.
+
+I can almost be reached at mr dot wook at gmail.
