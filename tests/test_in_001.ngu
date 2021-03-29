@@ -1,0 +1,41 @@
+# Put before overrides;
+# include <base_conf_file>
+
+# Comments at BOL only
+# Global stanza always comes first (in output, no restrictions on input)
+# Quoting is not currently supported;
+global.applications.user = nobody
+global.applications.type = python3.8
+global.applications.path = /var/www/unit/applications/error_server
+global.applications.processes.max = 3
+global.applications.processes.spare  = 2
+global.applications.working_directory /tmp
+
+# Extras are always tacked on before the final close
+extras.access_log = /var/log/nginx_unit_access.log
+
+# Listeners are always stored first
+listeners  *:5000 pass routes
+
+# Routes are always stored after listeners
+#  Sequencing of routes is important here, the routes are stored
+#  in order;
+routes match_uri pass applications/error_v1  /v1
+routes match_uri pass applications/dummy_v0  /dummy/v0
+routes match_uri pass applications/dummy_app  /dummy
+routes match_uri pass applications/search  /search, /esearch, /esearch/v0, /esearch/v1
+routes default   pass applications/error_v1
+
+# Applications apply globals per domain, and are applied before config data (so they can be overriden)
+# Applications are stored after routes;
+
+# listeners "*:80" pass:applications/$host
+
+applications.error_v1.module=error_server
+applications.error_v1.environment.aws_access_key_id=foo
+applications.error_v1.environment.aws_secret_access_key=bar
+applications.dummy_app.module=dummy_server
+applications.dummy_app.processes.max = 1
+applications.search.module=error_search
+applications.error_admin.callable=app
+applications."errors.thedigigi.net".module=error_admin_ui
