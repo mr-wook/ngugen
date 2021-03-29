@@ -1,5 +1,5 @@
 # ngugen
-ngugen is used to build nginx.unit configurations out of a simple domain specific language (DSL)
+ngugen is used to build nginx.unit configurations out of a simple domain specific language (DSL).
 
 ## Why?
 
@@ -11,10 +11,47 @@ Part of the reason is that you can't comment anything out of a strict JSON sourc
 Another part was that the layout of some parts (like ROUTES) made for low readability,
 given the sometimes predicate nature of the arguments.
 
+This document assumes you have considerable familiarity with Nginx and Nginx.Unit
+configurations, and find it as frustrating to debug as I did.
+
 ## What?
 
 While the source code is structured as a simple CLI app that leverages a single
 class to do all the work, it can be used in other applications as well (perhaps rolled into a more complex UI that does the generate/transmit/report loop), since nginx.unit has a long way to go to provide detailed error reporting on config, or even application errors.
+
+## How?
+Ngugen uses the idea of domains which separate the primary keys found in a Nginx.Unit
+configuration JSON.  These domains, defined by Nginx, are:
+- listeners
+- routes
+- applications
+- settings
+- isolation
+
+Ngugen supports two additional domains:
+. global
+. extras
+
+```global``` permits information to be applied globally across domains.  This is particularly useful for the ```applications``` domain.  ```extras``` is used to provide a set of documents at the end of the Nginx.Unit configuration.
+
+The most common way to set a value is via an ```assignment```, ie:
+
+```
+global.applications.user = nobody
+global.applications.type = python3.8
+
+applications.dummy.module=dummy
+applications.test.module=test
+```
+
+This would generate two application stanzas with the appropriate individual module settings, but using the same application user and type values.
+
+Because Nginx supports applications which are named for the host spec ($host) found
+in a listener, the (currently) sole implementation of quoting (double-quotes only),
+allows for a field key to have dots in it, ie:
+```
+applications."service.myhost.com".module=myservice
+```
 
 ### Examples
 ```
