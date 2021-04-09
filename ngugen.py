@@ -32,8 +32,8 @@ if True:
             "spare": 2
           },
           "environment": {
-            "aws_access_key_id":"AKIA4HR2AL5ELAES5L7O",
-            "aws_secret_access_key":"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"
+            "aws_access_key_id":"x",
+            "aws_secret_access_key":"y"
             }
         },
     ,
